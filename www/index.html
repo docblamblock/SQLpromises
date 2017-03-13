@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SQLite Example</title>
+
+</head>
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+
+
+<script>
+demoP = document.getElementById("demo");
+
+
+function status_bar(this_var)
+{
+var number = this_var;
+
+//alert("status="+this_var);
+
+        if (number==1)
+        {
+        $("#status").css('background', 'red');
+        $("#status").html("<p>Updating content..</p>");
+        
+        
+        }
+        if (number==0)
+        {
+        $("#status").css('background', 'green');
+        $("#status").html("<p>Ready</p>");  
+         
+        }
+
+}
+
+
+
+function checkConnection() {
+    
+    
+    var networkState = navigator.connection.type;
+
+   
+
+    var states = {};
+    states[Connection.UNKNOWN]  = 'Unknown connection';
+    states[Connection.ETHERNET] = 'Ethernet connection';
+    states[Connection.WIFI]     = 'WiFi connection';
+    states[Connection.CELL_2G]  = 'Cell 2G connection';
+    states[Connection.CELL_3G]  = 'Cell 3G connection';
+    states[Connection.CELL_4G]  = 'Cell 4G connection';
+    states[Connection.CELL]     = 'Cell generic connection';
+    states[Connection.NONE]     = 'No network connection';
+
+    alert('Connection type: ' + states[networkState]);
+    
+    // if we are connected then 
+    
+    return networkState;
+    
+    
+}
+
+
+function getPROC()
+
+{
+
+var dfrd3 = $.Deferred();
+    
+        
+        var url="http://www.peoplesrepublicofcork.com/eventguide/mobile/apps/json_visitcork.php?limit=15";
+
+        var jsonPromise = $.getJSON(url);
+        
+        jsonPromise.done(function(data) {
+        console.log('jsonPromise is done!'+ data[1].venue);
+        $("#myconsole").append('<br>jsonPromise is done!'+ data[1].venue);
+        
+        console.log(data);
+        console.log('task 1 in getPROC is done!');
+        
+        proc_array = $.map(data, function(value, index) {
+        return [value];
+            });
+        
+        dfrd3.resolve();
+         });
+      
+
+    return dfrd3.promise();
+
+
+
+}
+
+
+
+
+$(function(){
+    
+    
+    
+    
+    function1().done(function(){
+        // function1 is done, we can now call function2
+        
+    
+    /*
+    var networkState = navigator.connection.type;
+
+   
+
+    var states = {};
+    states[Connection.UNKNOWN]  = 'Unknown connection';
+    states[Connection.ETHERNET] = 'Ethernet connection';
+    states[Connection.WIFI]     = 'WiFi connection';
+    states[Connection.CELL_2G]  = 'Cell 2G connection';
+    states[Connection.CELL_3G]  = 'Cell 3G connection';
+    states[Connection.CELL_4G]  = 'Cell 4G connection';
+    states[Connection.CELL]     = 'Cell generic connection';
+    states[Connection.NONE]     = 'No network connection';
+
+    alert('Connection type: ' + states[networkState]);
+    
+    $("#myconsole").append('<br>function 1 is done! Network=!'+networkState);    
+    */    
+        
+        console.log('function 1 is done! Network' );
+        
+
+        function2().done(function(){
+            //function2 is done
+            console.log('function2 is done!');
+            $("#myconsole").append('<br>function2 is done! '+ proc_array[1].venue);
+            
+        }); //end func 2
+    });       // end func 1
+    
+ 
+    
+    
+    
+});
+
+
+
+
+function function1(){
+    var dfrd1 = $.Deferred();
+    var dfrd2= $.Deferred();
+
+
+    
+    setTimeout(function(){
+        // doing more async stuff
+        
+        
+        console.log('task 1 in function1 is done!');
+        $("#myconsole").append('<br>task 1 in function1 is done!');
+        dfrd1.resolve();
+    }, 750);
+
+
+
+    setTimeout(function(){
+        
+        var data = getPROC().done(function(){
+            
+            //function2 is done
+            
+            
+            console.log('proc function is done!');
+            $("#myconsole").append('<br>proc function is done!'+ proc_array[1].venue);
+            dfrd2.resolve();
+        });
+        
+       
+         
+     
+    }, 1000);
+
+      
+ 
+
+
+    return $.when(dfrd1, dfrd2).done(function(){
+        console.log('both tasks in function1 are done');
+        $("#myconsole").append('<br>both tasks in function1 are done');
+        // Both asyncs tasks are done
+    }).promise();
+}
+
+
+
+
+
+
+function function2(){
+    var dfrd1 = $.Deferred();
+    setTimeout(function(){
+        
+        // doing async stuff
+        
+        
+        console.log('task 1 in function2 is done!');
+        $("#myconsole").append('<br>task 1 in function2 is done (db func?)!'+proc_array[1].venue);
+        dfrd1.resolve();
+    }, 2000);
+    return dfrd1.promise();
+}
+
+
+
+
+
+/*
+var url="http://www.peoplesrepublicofcork.com/eventguide/mobile/apps/json_visitcork.php?limit=15";
+
+var jsonPromise = $.getJSON(url);
+
+jsonPromise.done(function(data) {
+   console.log('jsonPromise is done!'+ data[1].venue);
+   console.log(data);
+   
+                 
+ 
+
+        
+$when.function3().then(function() {
+    console.log('Finished printing the array');      // do stuff with data
+});
+
+
+//var proc_array_filler = function3();     // now insert each object in the array into the database separately 
+                                   // i.e. if there are 10 objects then saveToDb is called 10 times.  
+
+
+   
+  
+    
+});
+
+jsonPromise.fail(function(reason) {
+    // it failed... handle it
+});
+
+// other stuff ....
+
+jsonPromise.then(function(data) {
+    // do moar stuff with data
+    // will perhaps fire instantly, since the deferred may already be resolved.
+});
+
+
+
+
+function printout(item, index)
+{
+//console.log(item.venue);
+ //var this_infoID             = item.infoID; 
+
+var dfrd4 = $.Deferred();
+ setTimeout(function(){
+      console.log(item.venue);
+      dfrd4.resolve();
+    return dfrd4.promise();
+      
+    }, 10000);
+ 
+  
+ 
+}
+      */
+
+
+
+</script>
+
+<body>
+
+ <div id='status' style='width: 100%; background: green; font-weight: bold; font-size: 1.2em; text-align: center; color: white; padding-top: 10px; padding-bottom: 10px;'>
+        
+    </div> 
+
+<button onclick="numbers.forEach(myFunction)">Try it</button>
+<p id="demo"></p>
+
+<p id="listview"></p>
+
+<p id="myconsole"></p>
+    
+</body>
+
+
+
+</html>
