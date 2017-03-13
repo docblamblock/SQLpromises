@@ -97,7 +97,36 @@ var dfrd3 = $.Deferred();
 }
 
 
+$(document).ready(function() {
+    // are we running in native app or in a browser?
+    
 
+
+  
+    
+    window.isphone = false;
+    
+    if(document.URL.indexOf("http://") === -1 
+        && document.URL.indexOf("https://") === -1) {
+        window.isphone = true;
+    }
+
+    if( window.isphone ) {
+        document.addEventListener("deviceready", onDeviceReady, false);
+    } else {
+        onDeviceReady();
+    }
+
+
+} // end of document ready
+
+function onDeviceReady() {
+    alert("Device is Ready");    
+
+
+myDB = window.sqlitePlugin.openDatabase({name: "mySQLite.db", location: 'default'});
+
+$("#myconsole").append('<br>**device is ready!');
 
 $(function(){
     
@@ -108,25 +137,7 @@ $(function(){
         // function1 is done, we can now call function2
         
     
-    /*
-    var networkState = navigator.connection.type;
-
-   
-
-    var states = {};
-    states[Connection.UNKNOWN]  = 'Unknown connection';
-    states[Connection.ETHERNET] = 'Ethernet connection';
-    states[Connection.WIFI]     = 'WiFi connection';
-    states[Connection.CELL_2G]  = 'Cell 2G connection';
-    states[Connection.CELL_3G]  = 'Cell 3G connection';
-    states[Connection.CELL_4G]  = 'Cell 4G connection';
-    states[Connection.CELL]     = 'Cell generic connection';
-    states[Connection.NONE]     = 'No network connection';
-
-    alert('Connection type: ' + states[networkState]);
-    
-    $("#myconsole").append('<br>function 1 is done! Network=!'+networkState);    
-    */    
+      
         
         console.log('function 1 is done! Network' );
         
@@ -146,6 +157,10 @@ $(function(){
 });
 
 
+}     // end of device ready
+
+
+
 
 
 function function1(){
@@ -158,8 +173,30 @@ function function1(){
         // doing more async stuff
         
         
+    /*
+    var networkState = navigator.connection.type;
+
+   
+
+    var states = {};
+    states[Connection.UNKNOWN]  = 'Unknown connection';
+    states[Connection.ETHERNET] = 'Ethernet connection';
+    states[Connection.WIFI]     = 'WiFi connection';
+    states[Connection.CELL_2G]  = 'Cell 2G connection';
+    states[Connection.CELL_3G]  = 'Cell 3G connection';
+    states[Connection.CELL_4G]  = 'Cell 4G connection';
+    states[Connection.CELL]     = 'Cell generic connection';
+    states[Connection.NONE]     = 'No network connection';
+
+    alert('Connection type: ' + states[networkState]);
+    
+    $("#myconsole").append('<br>function 1 is done! Network=!'+networkState);    
+   
+    */    
+        
+        
         console.log('task 1 in function1 is done!');
-        $("#myconsole").append('<br>task 1 in function1 is done!');
+        $("#myconsole").append('<br>**task 1 in function1 is done!');
         dfrd1.resolve();
     }, 750);
 
@@ -169,7 +206,7 @@ function function1(){
         
         var data = getPROC().done(function(){
             
-            //function2 is done
+            //task 2 function 1 is done
             
             
             console.log('proc function is done!');
@@ -187,8 +224,8 @@ function function1(){
 
 
     return $.when(dfrd1, dfrd2).done(function(){
-        console.log('both tasks in function1 are done');
-        $("#myconsole").append('<br>both tasks in function1 are done');
+        console.log('both tasks in function1 are done'+'<br><br>');
+        $("#myconsole").append('<br>both tasks in function1 are done<br><br><br><br><p></p>');
         // Both asyncs tasks are done
     }).promise();
 }
